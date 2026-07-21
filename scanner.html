@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Scanner XV</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f8f0f5;
+text-align:center;
+color:#444;
+}
+
+header{
+background:#b06b8c;
+color:white;
+padding:20px;
+font-size:25px;
+font-weight:bold;
+}
+
+.contenedor{
+background:white;
+width:90%;
+max-width:450px;
+margin:20px auto;
+padding:20px;
+border-radius:20px;
+box-shadow:0 5px 15px #ccc;
+}
+
+#resultado{
+margin-top:20px;
+font-size:18px;
+}
+
+button{
+
+background:#b06b8c;
+color:white;
+border:0;
+padding:12px 20px;
+border-radius:25px;
+
+}
+
+.ok{
+color:green;
+font-weight:bold;
+}
+
+.error{
+color:red;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+📷 Entrada XV Años
+</header>
+
+
+
+<div class="contenedor">
+
+
+<h2>Escanear invitación</h2>
+
+
+<div id="lector"></div>
+
+
+<div id="resultado">
+
+Esperando QR...
+
+</div>
+
+
+<button id="entrada" style="display:none">
+
+Registrar entrada
+
+</button>
+
+
+</div>
+
+
+
+
+
+<script type="module">
+
+
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+
+import { 
+getFirestore,
+collection,
+getDocs,
+doc,
+updateDoc
+}
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyA1xfKwUsdIm_s5Pr8b3aViVA48LOQX2Zk",
+
+authDomain: "invitaciones-de-xv-ab404.firebaseapp.com",
+
+projectId: "invitaciones-de-xv-ab404",
+
+storageBucket: "invitaciones-de-xv-ab404.firebasestorage.app",
+
+messagingSenderId: "454618394738",
+
+appId: "1:454618394738:web:10d5e57467be38bb24d2eb"
+
+};
+
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+
+let invitadoID = null;
+
+
+
+async function buscarInvitado(codigo){
+
+
+const datos =
+await getDocs(collection(db,"invitados"));
+
+
+
+let encontrado=false;
+
+
+
+datos.forEach((item)=>{
+
+
+let invitado=item.data();
+
+
+
+if(invitado.codigo===codigo){
+
+
+invitadoID=item.id;
+
+
+encontrado=true;
+
+
+
+if(invitado.entrada){
+
+
+document.getElementById("resultado").innerHTML=
+
+"<p class='error'>⚠️ YA INGRESÓ</p>"+
+"<br>"+
+
+invitado.nombre;
+
+
+
+}else{
+
+
+document.getElementById("resultado").innerHTML=
+
+"<p class='ok'>✅ INVITADO VÁLIDO</p>"+
+"<br><b>"+
+invitado.nombre+
+"</b><br><br>"+
+"👥 Lugares: "+
+invitado.lugares;
+
+
+
+document.getElementById("entrada").style.display="inline-block";
+
+
+}
+
+
+}
+
+
+
+});
+
+
+
+if(!encontrado){
+
+
+document.getElementById("resultado").innerHTML=
+
+"<p class='error'>❌ Invitación no válida</p>";
+
+
+}
+
+
+
+}
+
+
+
+
+document.getElementById("entrada")
+.addEventListener("click",async()=>{
+
+
+await updateDoc(
+
+doc(db,"invitados",invitadoID),
+
+{
+
+entrada:true,
+
+horaEntrada:new Date()
+
+}
+
+);
+
+
+
+document.getElementById("resultado").innerHTML=
+
+"<p class='ok'>🚪 Entrada registrada</p>";
+
+
+document.getElementById("entrada").style.display="none";
+
+
+});
+
+
+
+
+
+
+function qrLeido(texto){
+
+
+let codigo=texto.split("id=")[1];
+
+
+if(codigo){
+
+
+buscarInvitado(codigo);
+
+
+}
+
+
+}
+
+
+
+const scanner = new Html5QrcodeScanner(
+
+"lector",
+
+{
+
+fps:10,
+
+qrbox:250
+
+}
+
+);
+
+
+
+scanner.render(
+
+qrLeido
+
+);
+
+
+
+</script>
+
+
+</body>
+
+</html>
