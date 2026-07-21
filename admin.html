@@ -572,13 +572,16 @@ window.whatsapp=function(enlace,nombre){
 
 let mensaje =
 "Hola "+nombre+" 🌸\n\n"+
-"Te comparto tu invitación de XV años.\n\n"+
+"Te comparto tu invitación de XV años:\n\n"+
 enlace;
 
 
-window.open(
-"https://wa.me/?text="+encodeURIComponent(mensaje)
-);
+let url =
+"https://api.whatsapp.com/send?text="
++ encodeURIComponent(mensaje);
+
+
+window.location.href=url;
 
 }
 
