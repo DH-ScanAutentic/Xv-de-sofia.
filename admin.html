@@ -8,61 +8,47 @@
 
 <title>XV Admin Pro</title>
 
-
 <style>
 
 body{
-
 margin:0;
 font-family:'Segoe UI',sans-serif;
 background:#f8f0f5;
 text-align:center;
 color:#444;
-
 }
 
-
 header{
-
 background:#b06b8c;
 color:white;
 padding:20px;
 font-size:28px;
 font-weight:bold;
-
 }
 
 
-
 .contenedor{
-
 width:90%;
-max-width:550px;
+max-width:500px;
 margin:20px auto;
 background:white;
 padding:20px;
 border-radius:20px;
 box-shadow:0 5px 15px #ccc;
-
 }
 
 
-
 input{
-
 width:85%;
 padding:12px;
 margin:8px;
 border-radius:20px;
 border:1px solid #ccc;
 font-size:16px;
-
 }
 
 
-
 button{
-
 background:#b06b8c;
 color:white;
 border:none;
@@ -70,77 +56,27 @@ padding:12px 20px;
 border-radius:25px;
 margin:5px;
 cursor:pointer;
-
 }
-
 
 
 button:hover{
-
 background:#8e4f6d;
-
 }
-
-
-
-.estadisticas{
-
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-
-}
-
-
-
-.caja{
-
-background:#f8f0f5;
-padding:15px;
-border-radius:15px;
-font-size:18px;
-
-}
-
 
 
 .tarjeta{
-
 background:#f8f0f5;
 padding:15px;
 margin-top:15px;
 border-radius:15px;
 text-align:left;
-
 }
-
-
-
-.confirmado{
-
-color:green;
-font-weight:bold;
-
-}
-
-
-
-.pendiente{
-
-color:#b06b8c;
-font-weight:bold;
-
-}
-
 
 
 .enlace{
-
-font-size:12px;
+font-size:13px;
 word-break:break-all;
-
 }
-
 
 
 </style>
@@ -155,72 +91,6 @@ word-break:break-all;
 🌸 XV ADMIN PRO 🌸
 </header>
 
-
-
-<div class="contenedor">
-
-<h2>📊 Estadísticas</h2>
-
-
-<div class="estadisticas">
-
-
-<div class="caja">
-
-👥<br>
-<span id="total">
-0
-</span>
-
-<br>
-Invitados
-
-</div>
-
-
-<div class="caja">
-
-✅<br>
-<span id="confirmados">
-0
-</span>
-
-<br>
-Confirmados
-
-</div>
-
-
-
-<div class="caja">
-
-⏳<br>
-<span id="pendientes">
-0
-</span>
-
-<br>
-Pendientes
-
-</div>
-
-
-<div class="caja">
-
-👨‍👩‍👧<br>
-<span id="personas">
-0
-</span>
-
-<br>
-Personas
-
-</div>
-
-
-</div>
-
-</div>
 
 <div class="contenedor">
 
@@ -256,7 +126,6 @@ Crear invitación
 
 
 
-
 <div class="contenedor">
 
 
@@ -272,10 +141,6 @@ Cargando...
 
 </div>
 
-
-
-
-
 <script type="module">
 
 
@@ -283,51 +148,33 @@ import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
 
-
-import {
-
+import { 
 getFirestore,
-
 collection,
-
 addDoc,
-
 getDocs,
-
-doc,
-
-deleteDoc
-
+deleteDoc,
+doc
 }
-
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
 
 
 
 const firebaseConfig = {
 
-
 apiKey: "AIzaSyA1xfKwUsdIm_s5Pr8b3aViVA48LOQX2Zk",
-
 
 authDomain: "invitaciones-de-xv-ab404.firebaseapp.com",
 
-
 projectId: "invitaciones-de-xv-ab404",
-
 
 storageBucket: "invitaciones-de-xv-ab404.firebasestorage.app",
 
-
 messagingSenderId: "454618394738",
-
 
 appId: "1:454618394738:web:10d5e57467be38bb24d2eb"
 
-
 };
-
 
 
 
@@ -336,34 +183,23 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
-console.log("Firebase iniciado");
-
-
-
 
 
 function generarCodigo(){
 
+return "XV-" +
 
-return "XV-" + Math.random()
-
+Math.random()
 .toString(36)
-
 .substring(2,8)
-
 .toUpperCase();
-
 
 }
 
 
 
 
-
-
-
 document.getElementById("crear")
-
 .addEventListener("click", async()=>{
 
 
@@ -378,13 +214,16 @@ document.getElementById("lugares").value;
 
 if(nombre==="" || lugares===""){
 
-
-alert("Completa los datos");
+document.getElementById("mensaje").innerHTML =
+"⚠️ Completa los datos";
 
 return;
 
-
 }
+
+
+
+let codigo = generarCodigo();
 
 
 
@@ -394,12 +233,11 @@ collection(db,"invitados"),
 
 {
 
-
 nombre:nombre,
 
 lugares:Number(lugares),
 
-codigo:generarCodigo(),
+codigo:codigo,
 
 confirmado:false,
 
@@ -412,178 +250,9 @@ fechaConfirmacion:null
 
 
 
-document.getElementById("nombre").value="";
+document.getElementById("mensaje").innerHTML =
 
-document.getElementById("lugares").value="";
-
-
-mostrarInvitados();
-
-
-});
-
-
-
-
-async function mostrarInvitados(){
-
-
-let lista =
-document.getElementById("lista");
-
-
-lista.innerHTML="";
-
-
-let total=0;
-
-let confirmados=0;
-
-let pendientes=0;
-
-let personas=0;
-
-
-
-
-const datos = await getDocs(collection(db,"invitados"));
-
-
-
-datos.forEach((item)=>{
-
-
-let invitado=item.data();
-
-
-total++;
-
-
-
-if(invitado.confirmado){
-
-confirmados++;
-
-personas += invitado.personasConfirmadas || invitado.lugares;
-
-}else{
-
-
-pendientes++;
-
-
-}
-
-
-
-
-let estado = invitado.confirmado ?
-
-"<span class='confirmado'>✅ Confirmado</span>"
-
-:
-
-"<span class='pendiente'>⏳ Pendiente</span>";
-
-
-
-let enlace =
-
-"https://dh-scanautentic.github.io/Xv-de-sofia./?id="
-
-+invitado.codigo;
-
-
-
-
-lista.innerHTML += `
-
-
-<div class="tarjeta">
-
-
-<b>👤 ${invitado.nombre}</b>
-
-
-<br>
-
-👥 Lugares: ${invitado.lugares}
-
-
-<br>
-
-
-${estado}
-
-
-<br><br>
-
-
-<div class="enlace">
-
-🔗 ${enlace}
-
-</div>
-
-
-<br>
-
-
-<button onclick="copiar('${enlace}')">
-
-📋 Copiar
-
-</button>
-
-
-<button onclick="borrar('${item.id}')">
-
-🗑 Eliminar
-
-</button>
-
-
-</div>
-
-
-`;
-
-
-
-});
-
-
-
-document.getElementById("total").innerHTML=total;
-
-document.getElementById("confirmados").innerHTML=confirmados;
-
-document.getElementById("pendientes").innerHTML=pendientes;
-
-document.getElementById("personas").innerHTML=personas;
-
-
-
-}
-
-
-
-window.copiar=function(texto){
-
-
-navigator.clipboard.writeText(texto);
-
-alert("Enlace copiado ✅");
-
-
-};
-
-
-
-window.borrar=async function(id){
-
-
-if(confirm("¿Eliminar invitado
+"✅ Invitación creada<br>"+codigo
 
 </body>
 
