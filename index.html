@@ -95,3 +95,117 @@ Detalles del evento
 </div>
 
 </div>
+
+<div class="seccion" id="evento">
+
+<h2>Detalles del evento</h2>
+
+<p>
+📅 Fecha: Próximamente<br><br>
+
+⏰ Hora: Próximamente<br><br>
+
+📍 Lugar: Próximamente
+</p>
+
+</div>
+
+
+<div class="seccion" id="confirmar">
+
+<h2>Confirmación de asistencia</h2>
+
+<p>
+Ingresa tu nombre para confirmar tu lugar.
+</p>
+
+<input 
+id="nombre" 
+type="text" 
+placeholder="Nombre del invitado"
+style="
+padding:12px;
+width:80%;
+border-radius:20px;
+border:1px solid #ccc;
+font-size:16px;
+">
+
+
+<br><br>
+
+
+<input 
+id="invitados" 
+type="number" 
+placeholder="Número de personas"
+style="
+padding:12px;
+width:80%;
+border-radius:20px;
+border:1px solid #ccc;
+font-size:16px;
+">
+
+
+<br><br>
+
+
+<button 
+class="boton"
+onclick="confirmar()"
+style="
+border:none;
+cursor:pointer;
+">
+Enviar confirmación
+</button>
+
+
+<p id="mensaje"></p>
+
+</div>
+
+
+<script>
+
+function confirmar(){
+
+let nombre = document.getElementById("nombre").value;
+let invitados = document.getElementById("invitados").value;
+let mensaje = document.getElementById("mensaje");
+
+
+if(nombre=="" || invitados==""){
+
+mensaje.innerHTML="⚠️ Completa todos los datos";
+
+return;
+
+}
+
+
+mensaje.innerHTML=
+"✅ Gracias "+nombre+
+"<br>Tu asistencia fue registrada para "+
+invitados+" persona(s).";
+
+}
+
+</script>
+
+<footer style="
+padding:30px;
+background:#b06b8c;
+color:white;
+">
+
+<p>
+Gracias por acompañarme en este día tan especial ❤️
+</p>
+
+</footer>
+
+
+</body>
+</html>
