@@ -1,136 +1,231 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Mis XV Años</title>
 
+
 <style>
+
 body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: #f8f0f5;
-    text-align: center;
-    color: #444;
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:#f8f0f5;
+    text-align:center;
+    color:#444;
 }
+
 
 .portada {
-    width: 100%;
-    height: 100vh;
-    background-image: url("sofia.jpg");
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    padding-bottom: 40px;
+
+    width:100%;
+    height:100vh;
+    background-image:url("sofia.jpg");
+    background-size:cover;
+    background-position:center;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    align-items:center;
+
+    padding-bottom:40px;
+
 }
+
+
 
 .contenido {
-    background: rgba(255,255,255,0.85);
-    padding: 25px;
-    border-radius: 20px;
-    width: 85%;
-    max-width: 400px;
+
+    background:rgba(255,255,255,0.85);
+    padding:25px;
+    border-radius:20px;
+
+    width:85%;
+    max-width:400px;
+
 }
+
+
 
 h1 {
-    font-size: 38px;
-    margin: 5px;
-    color: #b06b8c;
+
+    font-size:38px;
+    margin:5px;
+    color:#b06b8c;
+
 }
+
+
 
 h2 {
-    color: #777;
+
+    color:#777;
+
 }
+
+
 
 .boton {
-    display: block;
-    margin: 15px auto;
-    padding: 15px;
-    width: 80%;
-    border-radius: 30px;
-    background: #b06b8c;
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
+
+    display:block;
+
+    margin:15px auto;
+
+    padding:15px;
+
+    width:80%;
+
+    border-radius:30px;
+
+    background:#b06b8c;
+
+    color:white;
+
+    text-decoration:none;
+
+    font-size:18px;
+
     border:none;
+
+    cursor:pointer;
+
 }
+
+
 
 .boton:hover {
-    background: #8e4f6d;
+
+    background:#8e4f6d;
+
 }
+
+
 
 .seccion {
-    padding: 30px 15px;
+
+    padding:30px 15px;
+
 }
+
+
 
 input {
+
     padding:12px;
+
     width:80%;
+
     border-radius:20px;
+
     border:1px solid #ccc;
+
     font-size:16px;
+
 }
 
+
+#datosInvitado{
+
+    font-size:20px;
+    color:#b06b8c;
+    font-weight:bold;
+
+}
+
+
 </style>
+
+
 </head>
+
 
 <body>
 
+
 <div class="portada">
+
 
 <div class="contenido">
 
+
 <h1>Mis XV Años</h1>
 
-<h2>Estás invitado a celebrar conmigo</h2>
+
+<h2 id="saludo">
+
+Estás invitado a celebrar conmigo
+
+</h2>
+
 
 <p>
+
 Una fecha muy especial que quiero compartir contigo.
+
 </p>
 
+
 <a class="boton" href="#confirmar">
+
 Confirmar asistencia
+
 </a>
+
 
 <a class="boton" href="#evento">
+
 Detalles del evento
+
 </a>
 
-</div>
 
 </div>
 
+
+</div>
 
 <div class="seccion" id="evento">
 
 <h2>Detalles del evento</h2>
 
 <p>
+
 📅 Fecha: Próximamente<br><br>
 
 ⏰ Hora: Próximamente<br><br>
 
 📍 Lugar: Próximamente
+
 </p>
 
 </div>
 
+
+
 <div class="seccion" id="confirmar">
+
 
 <h2>Confirmación de asistencia</h2>
 
-<p>
-Ingresa tu nombre y número de personas.
+
+<div id="datosInvitado"></div>
+
+
+<p id="textoConfirmacion">
+
+Confirma tu asistencia.
+
 </p>
 
 
+
 <input 
-id="nombre" 
-type="text" 
+id="nombre"
+type="text"
 placeholder="Nombre del invitado"
 >
 
@@ -139,8 +234,8 @@ placeholder="Nombre del invitado"
 
 
 <input 
-id="invitados" 
-type="number" 
+id="invitados"
+type="number"
 placeholder="Número de personas"
 >
 
@@ -151,11 +246,15 @@ placeholder="Número de personas"
 <button 
 class="boton"
 id="btnConfirmar">
-Enviar confirmación
+
+Confirmar asistencia
+
 </button>
 
 
+
 <p id="mensaje"></p>
+
 
 </div>
 
@@ -167,75 +266,204 @@ background:#b06b8c;
 color:white;
 ">
 
+
 <p>
+
 Gracias por acompañarme en este día tan especial ❤️
+
 </p>
+
 
 </footer>
 
 
+
 <script type="module">
+
 
 import { initializeApp } 
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
 
-import { getFirestore, collection, addDoc } 
+
+import { 
+getFirestore,
+collection,
+query,
+where,
+getDocs,
+doc,
+updateDoc
+}
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA1xfKwUsdIm_s5Pr8b3aViVA48LOQX2Zk",
-  authDomain: "invitaciones-de-xv-ab404.firebaseapp.com",
-  projectId: "invitaciones-de-xv-ab404",
-  storageBucket: "invitaciones-de-xv-ab404.firebasestorage.app",
-  messagingSenderId: "454618394738",
-  appId: "1:454618394738:web:10d5e57467be38bb24d2eb"
+
+apiKey: "AIzaSyA1xfKwUsdIm_s5Pr8b3aViVA48LOQX2Zk",
+
+authDomain: "invitaciones-de-xv-ab404.firebaseapp.com",
+
+projectId: "invitaciones-de-xv-ab404",
+
+storageBucket: "invitaciones-de-xv-ab404.firebasestorage.app",
+
+messagingSenderId: "454618394738",
+
+appId: "1:454618394738:web:10d5e57467be38bb24d2eb"
+
 };
+
 
 
 const app = initializeApp(firebaseConfig);
 
+
 const db = getFirestore(app);
 
 
-document.getElementById("btnConfirmar").addEventListener("click", async ()=>{
+
+let invitadoActual = null;
 
 
-let nombre = document.getElementById("nombre").value;
-let invitados = document.getElementById("invitados").value;
+
+const parametros = new URLSearchParams(window.location.search);
+
+
+const codigo = parametros.get("id");
+
+
+
+if(codigo){
+
+
+const q = query(
+
+collection(db,"invitados"),
+
+where("codigo","==",codigo)
+
+);
+
+
+
+const resultado = await getDocs(q);
+
+
+
+resultado.forEach((documento)=>{
+
+
+invitadoActual = documento.id;
+
+
+let datos = documento.data();
+
+
+
+document.getElementById("datosInvitado").innerHTML =
+
+"🌸 Bienvenido "+datos.nombre+
+"<br>👥 Lugares reservados: "+datos.lugares;
+
+
+
+document.getElementById("nombre").value = datos.nombre;
+
+
+document.getElementById("invitados").value = datos.lugares;
+
+
+
+document.getElementById("nombre").style.display="none";
+
+
+document.getElementById("invitados").style.display="none";
+
+
+});
+
+
+}
+
+document.getElementById("btnConfirmar")
+.addEventListener("click", async()=>{
+
+
 let mensaje = document.getElementById("mensaje");
+
+
+let nombre =
+document.getElementById("nombre").value;
+
+
+let invitados =
+document.getElementById("invitados").value;
+
 
 
 if(nombre==="" || invitados===""){
 
-mensaje.innerHTML="⚠️ Completa todos los datos";
+
+mensaje.innerHTML="⚠️ Faltan datos";
 
 return;
+
 
 }
 
 
-await addDoc(collection(db,"confirmaciones"),{
 
-nombre:nombre,
-invitados:Number(invitados),
-fecha:new Date()
 
-});
+if(invitadoActual){
+
+
+
+await updateDoc(
+
+doc(db,"invitados",invitadoActual),
+
+{
+
+confirmado:true,
+
+fechaConfirmacion:new Date(),
+
+personasConfirmadas:Number(invitados)
+
+}
+
+);
+
 
 
 mensaje.innerHTML=
+
 "✅ Gracias "+nombre+
-"<br>Tu confirmación fue registrada";
+"<br>Tu asistencia quedó confirmada";
+
+
+
+}else{
+
+
+mensaje.innerHTML=
+
+"⚠️ Invitación no válida";
+
+
+}
+
 
 
 });
 
-</script>
+
+
 </script>
 
 
 </body>
+
 </html>
