@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>XV ADMIN</title>
+<title>XV ADMIN PRO</title>
 
 <style>
 
@@ -29,11 +29,24 @@ font-weight:bold;
 .contenedor{
 background:white;
 width:90%;
-max-width:500px;
+max-width:550px;
 margin:20px auto;
 padding:20px;
 border-radius:20px;
 box-shadow:0 5px 15px #ccc;
+}
+
+.estadisticas{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+.caja{
+background:#f8f0f5;
+padding:15px;
+border-radius:15px;
+font-size:18px;
 }
 
 input{
@@ -68,6 +81,16 @@ font-size:12px;
 word-break:break-all;
 }
 
+.entrada{
+color:green;
+font-weight:bold;
+}
+
+.pendiente{
+color:#b06b8c;
+font-weight:bold;
+}
+
 </style>
 
 </head>
@@ -79,6 +102,41 @@ word-break:break-all;
 <header>
 🌸 XV ADMIN PRO 🌸
 </header>
+
+
+<div class="contenedor">
+
+<h2>📊 Estadísticas</h2>
+
+<div class="estadisticas">
+
+<div class="caja">
+👥<br>
+<span id="total">0</span>
+<br>Invitados
+</div>
+
+<div class="caja">
+✅<br>
+<span id="confirmados">0</span>
+<br>Confirmados
+</div>
+
+<div class="caja">
+⏳<br>
+<span id="pendientes">0</span>
+<br>Pendientes
+</div>
+
+<div class="caja">
+🚪<br>
+<span id="entradas">0</span>
+<br>Entradas
+</div>
+
+</div>
+
+</div>
 
 
 <div class="contenedor">
@@ -106,10 +164,9 @@ Crear invitación
 </div>
 
 
-
 <div class="contenedor">
 
-<h2>👥 Invitados</h2>
+<h2>👥 Lista de invitados</h2>
 
 
 <div id="lista">
@@ -122,6 +179,7 @@ Cargando...
 
 <script type="module">
 
+
 import { initializeApp } 
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
@@ -132,7 +190,8 @@ collection,
 addDoc,
 getDocs,
 deleteDoc,
-doc
+doc,
+updateDoc
 }
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
@@ -210,6 +269,10 @@ codigo:codigo,
 
 confirmado:false,
 
+entrada:false,
+
+horaEntrada:null,
+
 fechaConfirmacion:null
 
 }
@@ -236,6 +299,7 @@ mostrarInvitados();
 
 
 
+
 async function mostrarInvitados(){
 
 
@@ -244,6 +308,15 @@ document.getElementById("lista");
 
 
 lista.innerHTML="";
+
+
+let total=0;
+
+let confirmados=0;
+
+let pendientes=0;
+
+let entradas=0;
 
 
 
@@ -255,7 +328,30 @@ await getDocs(collection(db,"invitados"));
 datos.forEach((item)=>{
 
 
-let invitado = item.data();
+let invitado=item.data();
+
+
+
+total++;
+
+
+if(invitado.confirmado){
+
+confirmados++;
+
+}else{
+
+pendientes++;
+
+}
+
+
+
+if(invitado.entrada){
+
+entradas++;
+
+}
 
 
 
@@ -275,11 +371,14 @@ lista.innerHTML += `
 
 <b>👤 ${invitado.nombre}</b>
 
+
 <br>
 
 👥 Lugares: ${invitado.lugares}
 
+
 <br>
+
 
 ${invitado.confirmado ?
 
@@ -288,6 +387,19 @@ ${invitado.confirmado ?
 :
 
 "⏳ Pendiente"}
+
+
+<br>
+
+
+${invitado.entrada ?
+
+"<span class='entrada'>🚪 Ya ingresó</span>"
+
+:
+
+"<span class='pendiente'>🚫 Sin entrada</span>"}
+
 
 
 <br><br>
@@ -310,9 +422,9 @@ ${enlace}
 </button>
 
 
-<button onclick="whatsapp('${enlace}','${invitado.nombre}')">
+<button onclick="registrarEntrada('${item.id}')">
 
-📲 WhatsApp
+🚪 Entrada
 
 </button>
 
@@ -334,8 +446,18 @@ ${enlace}
 });
 
 
-}
 
+document.getElementById("total").innerHTML=total;
+
+document.getElementById("confirmados").innerHTML=confirmados;
+
+document.getElementById("pendientes").innerHTML=pendientes;
+
+document.getElementById("entradas").innerHTML=entradas;
+
+
+
+}
 
 
 
@@ -351,25 +473,36 @@ alert("Enlace copiado ✅");
 
 
 
-window.whatsapp=function(enlace,nombre){
+window.registrarEntrada=async function(id){
 
 
-let texto =
-
-"Hola "+nombre+
-", te comparto tu invitación de XV años 🌸\n\n"
-+enlace;
+if(confirm("¿Registrar entrada de este invitado?")){
 
 
-window.open(
+await updateDoc(
 
-"https://wa.me/?text="
-+encodeURIComponent(texto)
+doc(db,"invitados",id),
+
+{
+
+entrada:true,
+
+horaEntrada:new Date()
+
+}
 
 );
 
 
+
+mostrarInvitados();
+
+
 }
+
+
+}
+
 
 
 
@@ -381,7 +514,9 @@ if(confirm("¿Eliminar invitado?")){
 
 
 await deleteDoc(
+
 doc(db,"invitados",id)
+
 );
 
 
