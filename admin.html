@@ -526,6 +526,19 @@ document.getElementById("entradas").innerHTML=entradas;
 }
 window.mostrarQR=function(id,enlace){
 
+let contenedor=document.getElementById("qr-"+id);
+
+contenedor.innerHTML="";
+
+new QRCode(contenedor,{
+text:enlace,
+width:180,
+height:180
+});
+
+}
+
+
 window.guardarQR=function(id){
 
 let imagen=document.querySelector("#qr-"+id+" img");
@@ -537,7 +550,6 @@ alert("Primero genera el QR");
 return;
 
 }
-
 
 let enlace=document.createElement("a");
 
@@ -552,53 +564,6 @@ enlace.click();
 document.body.removeChild(enlace);
 
 }
-
-let qr =
-document.querySelector("#qr-"+id+" img");
-
-
-if(!qr){
-
-alert("Primero genera el QR");
-
-return;
-
-}
-
-
-let enlace = document.createElement("a");
-
-enlace.href = qr.src;
-
-enlace.download = "QR-invitacion.png";
-
-enlace.click();
-
-
-}
-let contenedor =
-document.getElementById("qr-"+id);
-
-
-contenedor.innerHTML="";
-
-
-new QRCode(contenedor,{
-
-text: enlace,
-
-width:180,
-
-height:180
-
-});
-
-
-}
-
-
-
-
 window.copiar=function(texto){
 
 navigator.clipboard.writeText(texto);
