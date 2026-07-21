@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>XV Admin</title>
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:#f8f0f5;
+    text-align:center;
+    color:#444;
+}
+
+header{
+    background:#b06b8c;
+    color:white;
+    padding:20px;
+    font-size:28px;
+}
+
+.contenedor{
+    width:90%;
+    max-width:500px;
+    margin:20px auto;
+    background:white;
+    padding:20px;
+    border-radius:20px;
+    box-shadow:0 5px 15px #ccc;
+}
+
+input{
+    width:85%;
+    padding:12px;
+    margin:8px;
+    border-radius:20px;
+    border:1px solid #ccc;
+    font-size:16px;
+}
+
+button{
+    background:#b06b8c;
+    color:white;
+    border:none;
+    padding:14px 25px;
+    border-radius:25px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#8e4f6d;
+}
+
+.tarjeta{
+    background:#f8f0f5;
+    margin-top:15px;
+    padding:15px;
+    border-radius:15px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+🌸 XV ADMIN 🌸
+</header>
+
+
+<div class="contenedor">
+
+<h2>Nuevo invitado</h2>
+
+<input id="nombre" placeholder="Nombre del invitado">
+
+<input id="lugares" type="number" placeholder="Número de lugares">
+
+
+<br>
+
+<button id="crear">
+Crear invitación
+</button>
+
+
+<p id="mensaje"></p>
+
+</div>
+
+
+<div class="contenedor">
+
+<h2>Lista de invitados</h2>
+
+<div id="lista">
+Cargando...
+</div>
+
+</div>
+
+
+
+<script type="module">
+
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+
+import { getFirestore }
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA1xfKwUsdIm_s5Pr8b3aViVA48LOQX2Zk",
+  authDomain: "invitaciones-de-xv-ab404.firebaseapp.com",
+  projectId: "invitaciones-de-xv-ab404",
+  storageBucket: "invitaciones-de-xv-ab404.firebasestorage.app",
+  messagingSenderId: "454618394738",
+  appId: "1:454618394738:web:10d5e57467be38bb24d2eb"
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+document.getElementById("mensaje").innerHTML =
+"Firebase conectado ✅";
+
+
+</script>
+
+
+</body>
+</html>
