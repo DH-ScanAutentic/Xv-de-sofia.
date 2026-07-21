@@ -471,7 +471,11 @@ ${enlace}
 
 </button>
 
+<button onclick="whatsapp('${enlace}','${invitado.nombre}')">
 
+📲 WhatsApp
+
+</button>
 
 <button onclick="eliminar('${item.id}')">
 
@@ -564,7 +568,19 @@ horaEntrada:new Date()
 
 );
 
+window.whatsapp=function(enlace,nombre){
 
+let mensaje =
+"Hola "+nombre+" 🌸\n\n"+
+"Te comparto tu invitación de XV años.\n\n"+
+enlace;
+
+
+window.open(
+"https://wa.me/?text="+encodeURIComponent(mensaje)
+);
+
+}
 
 mostrarInvitados();
 
