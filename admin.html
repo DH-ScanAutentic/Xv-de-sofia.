@@ -471,6 +471,14 @@ ${enlace}
 
 </button>
 
+
+<button onclick="guardarQR('${item.id}')">
+
+💾 Guardar QR
+
+</button>
+
+
 <button onclick="whatsapp('${enlace}','${invitado.nombre}')">
 
 📲 WhatsApp
@@ -514,6 +522,31 @@ document.getElementById("entradas").innerHTML=entradas;
 }
 window.mostrarQR=function(id,enlace){
 
+window.guardarQR=function(id){
+
+let qr =
+document.querySelector("#qr-"+id+" img");
+
+
+if(!qr){
+
+alert("Primero genera el QR");
+
+return;
+
+}
+
+
+let enlace = document.createElement("a");
+
+enlace.href = qr.src;
+
+enlace.download = "QR-invitacion.png";
+
+enlace.click();
+
+
+}
 let contenedor =
 document.getElementById("qr-"+id);
 
@@ -577,11 +610,10 @@ enlace;
 
 
 let url =
-"https://api.whatsapp.com/send?text="
-+ encodeURIComponent(mensaje);
+"https://wa.me/?text=" + encodeURIComponent(mensaje);
 
 
-window.location.href=url;
+window.open(url,"_blank");
 
 }
 
