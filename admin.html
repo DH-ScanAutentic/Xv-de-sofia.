@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>XV Admin</title>
+<title>XV Admin Pro</title>
 
 <style>
+
 body{
     margin:0;
     font-family:'Segoe UI',sans-serif;
@@ -15,14 +16,20 @@ body{
     color:#444;
 }
 
+
 header{
+
     background:#b06b8c;
     color:white;
     padding:20px;
     font-size:28px;
+    font-weight:bold;
+
 }
 
+
 .contenedor{
+
     width:90%;
     max-width:500px;
     margin:20px auto;
@@ -30,78 +37,118 @@ header{
     padding:20px;
     border-radius:20px;
     box-shadow:0 5px 15px #ccc;
+
 }
 
+
 input{
+
     width:85%;
     padding:12px;
     margin:8px;
     border-radius:20px;
     border:1px solid #ccc;
     font-size:16px;
+
 }
 
+
 button{
+
     background:#b06b8c;
     color:white;
     border:none;
-    padding:14px 25px;
+    padding:12px 20px;
     border-radius:25px;
-    font-size:16px;
+    margin:5px;
     cursor:pointer;
+    font-size:15px;
+
 }
+
 
 button:hover{
+
     background:#8e4f6d;
+
 }
 
+
 .tarjeta{
+
     background:#f8f0f5;
     margin-top:15px;
     padding:15px;
     border-radius:15px;
+    text-align:left;
+
 }
+
+
+.enlace{
+
+    font-size:13px;
+    word-break:break-all;
+
+}
+
 </style>
 
 </head>
 
+
 <body>
 
+
 <header>
-🌸 XV ADMIN 🌸
+🌸 XV ADMIN PRO 🌸
 </header>
 
 
 <div class="contenedor">
 
-<h2>Nuevo invitado</h2>
+<h2>➕ Nuevo invitado</h2>
 
-<input id="nombre" placeholder="Nombre del invitado">
 
-<input id="lugares" type="number" placeholder="Número de lugares">
+<input 
+id="nombre"
+placeholder="Nombre del invitado">
+
+
+<input 
+id="lugares"
+type="number"
+placeholder="Número de lugares">
+
 
 <br>
+
 
 <button id="crear">
 Crear invitación
 </button>
 
+
 <p id="mensaje"></p>
 
+
 </div>
+
 
 
 <div class="contenedor">
 
-<h2>Lista de invitados</h2>
+<h2>👥 Invitados</h2>
+
 
 <div id="lista">
+
 Cargando...
-</div>
 
 </div>
 
 
+</div>
 
 <script type="module">
 
@@ -136,12 +183,33 @@ const db = getFirestore(app);
 
 
 
-document.getElementById("crear").addEventListener("click", async()=>{
+function generarCodigo(){
+
+return "XV-" + Math.random()
+.toString(36)
+.substring(2,8)
+.toUpperCase();
+
+}
 
 
-let nombre = document.getElementById("nombre").value;
-let lugares = document.getElementById("lugares").value;
-let mensaje = document.getElementById("mensaje");
+
+
+document.getElementById("crear")
+.addEventListener("click", async()=>{
+
+
+let nombre =
+document.getElementById("nombre").value;
+
+
+let lugares =
+document.getElementById("lugares").value;
+
+
+let mensaje =
+document.getElementById("mensaje");
+
 
 
 if(nombre==="" || lugares===""){
@@ -153,53 +221,84 @@ return;
 
 
 
+let codigo = generarCodigo();
+
+
+
 await addDoc(collection(db,"invitados"),{
 
+
 nombre:nombre,
+
 lugares:Number(lugares),
+
+codigo:codigo,
+
 confirmado:false,
+
 fechaConfirmacion:null
+
 
 });
 
 
-mensaje.innerHTML="✅ Invitado creado";
+
+mensaje.innerHTML=
+"✅ Invitación creada<br>Código: "
++codigo;
+
 
 
 document.getElementById("nombre").value="";
+
 document.getElementById("lugares").value="";
+
 
 
 mostrarInvitados();
 
 
+
 });
-
-
 
 
 
 async function mostrarInvitados(){
 
-let lista=document.getElementById("lista");
+
+let lista =
+document.getElementById("lista");
+
 
 lista.innerHTML="";
 
 
-const consulta = await getDocs(collection(db,"invitados"));
+
+const datos =
+await getDocs(collection(db,"invitados"));
 
 
-consulta.forEach((doc)=>{
+
+datos.forEach((doc)=>{
 
 
-let invitado=doc.data();
+let invitado = doc.data();
+
+
+
+let enlace =
+"https://dh-scanautentic.github.io/Xv-de-sofia./?id="
++invitado.codigo;
+
 
 
 lista.innerHTML += `
 
+
 <div class="tarjeta">
 
-<b>${invitado.nombre}</b>
+
+<b>👤 ${invitado.nombre}</b>
 
 <br>
 
@@ -207,11 +306,44 @@ lista.innerHTML += `
 
 <br>
 
-${invitado.confirmado ? "✅ Confirmado" : "⏳ Pendiente"}
+${invitado.confirmado ? 
+"✅ Confirmado" :
+"⏳ Pendiente"}
+
+
+<br><br>
+
+
+<div class="enlace">
+
+🔗 ${enlace}
 
 </div>
 
+
+<br>
+
+
+<button onclick="copiar('${enlace}')">
+
+📋 Copiar
+
+</button>
+
+
+<button onclick="whatsapp('${enlace}','${invitado.nombre}')">
+
+📲 WhatsApp
+
+</button>
+
+
+
+</div>
+
+
 `;
+
 
 
 });
@@ -221,12 +353,41 @@ ${invitado.confirmado ? "✅ Confirmado" : "⏳ Pendiente"}
 
 
 
+window.copiar=function(texto){
+
+navigator.clipboard.writeText(texto);
+
+alert("Enlace copiado ✅");
+
+};
+
+
+
+window.whatsapp=function(enlace,nombre){
+
+
+let mensaje =
+"Hola "+nombre+
+", te comparto tu invitación de XV años 🌸\n\n"
++enlace;
+
+
+
+window.open(
+"https://wa.me/?text="
++encodeURIComponent(mensaje)
+);
+
+
+};
+
+
+
 mostrarInvitados();
 
 
 
 </script>
-
 
 </body>
 </html>
