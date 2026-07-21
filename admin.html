@@ -8,6 +8,8 @@
 
 <title>XV ADMIN PRO</title>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 <style>
 
 body{
@@ -91,6 +93,11 @@ color:#b06b8c;
 font-weight:bold;
 }
 
+.qr{
+text-align:center;
+margin-top:15px;
+}
+
 </style>
 
 </head>
@@ -100,10 +107,10 @@ font-weight:bold;
 
 
 <header>
+
 🌸 XV ADMIN PRO 🌸
+
 </header>
-
-
 <div class="contenedor">
 
 <h2>📊 Estadísticas</h2>
@@ -113,30 +120,39 @@ font-weight:bold;
 <div class="caja">
 👥<br>
 <span id="total">0</span>
-<br>Invitados
+<br>
+Invitados
 </div>
+
 
 <div class="caja">
 ✅<br>
 <span id="confirmados">0</span>
-<br>Confirmados
+<br>
+Confirmados
 </div>
+
 
 <div class="caja">
 ⏳<br>
 <span id="pendientes">0</span>
-<br>Pendientes
+<br>
+Pendientes
 </div>
+
 
 <div class="caja">
 🚪<br>
 <span id="entradas">0</span>
-<br>Entradas
+<br>
+Entradas
 </div>
+
 
 </div>
 
 </div>
+
 
 
 <div class="contenedor">
@@ -154,7 +170,9 @@ font-weight:bold;
 
 
 <button id="crear">
+
 Crear invitación
+
 </button>
 
 
@@ -164,19 +182,21 @@ Crear invitación
 </div>
 
 
+
+
 <div class="contenedor">
 
 <h2>👥 Lista de invitados</h2>
 
 
 <div id="lista">
+
 Cargando...
-</div>
-
 
 </div>
 
 
+</div>
 <script type="module">
 
 
@@ -196,6 +216,7 @@ updateDoc
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
+
 const firebaseConfig = {
 
 apiKey: "AIzaSyA1xfKwUsdIm_s5Pr8b3aViVA48LOQX2Zk",
@@ -213,9 +234,12 @@ appId: "1:454618394738:web:10d5e57467be38bb24d2eb"
 };
 
 
+
 const app = initializeApp(firebaseConfig);
 
+
 const db = getFirestore(app);
+
 
 
 function generarCodigo(){
@@ -226,6 +250,9 @@ return "XV-" + Math.random()
 .toUpperCase();
 
 }
+
+
+
 document.getElementById("crear")
 .addEventListener("click", async()=>{
 
@@ -245,9 +272,12 @@ document.getElementById("mensaje");
 
 if(nombre==="" || lugares===""){
 
+
 mensaje.innerHTML="⚠️ Completa los datos";
 
+
 return;
+
 
 }
 
@@ -258,8 +288,11 @@ let codigo = generarCodigo();
 
 
 await addDoc(
+
 collection(db,"invitados"),
+
 {
+
 
 nombre:nombre,
 
@@ -275,6 +308,7 @@ horaEntrada:null,
 
 fechaConfirmacion:null
 
+
 }
 
 );
@@ -282,11 +316,13 @@ fechaConfirmacion:null
 
 
 mensaje.innerHTML =
+
 "✅ Invitación creada<br>Código: "+codigo;
 
 
 
 document.getElementById("nombre").value="";
+
 
 document.getElementById("lugares").value="";
 
@@ -295,11 +331,6 @@ mostrarInvitados();
 
 
 });
-
-
-
-
-
 async function mostrarInvitados(){
 
 
@@ -333,6 +364,7 @@ let invitado=item.data();
 
 
 total++;
+
 
 
 if(invitado.confirmado){
@@ -412,7 +444,9 @@ ${enlace}
 </div>
 
 
+
 <br>
+
 
 
 <button onclick="copiar('${enlace}')">
@@ -422,11 +456,21 @@ ${enlace}
 </button>
 
 
+
 <button onclick="registrarEntrada('${item.id}')">
 
 🚪 Entrada
 
 </button>
+
+
+
+<button onclick="mostrarQR('${item.id}','${enlace}')">
+
+📱 QR
+
+</button>
+
 
 
 <button onclick="eliminar('${item.id}')">
@@ -436,7 +480,13 @@ ${enlace}
 </button>
 
 
+
+<div id="qr-${item.id}" class="qr"></div>
+
+
+
 </div>
+
 
 
 `;
@@ -455,6 +505,27 @@ document.getElementById("pendientes").innerHTML=pendientes;
 
 document.getElementById("entradas").innerHTML=entradas;
 
+
+
+}
+window.mostrarQR=function(id,enlace){
+
+let contenedor =
+document.getElementById("qr-"+id);
+
+
+contenedor.innerHTML="";
+
+
+new QRCode(contenedor,{
+
+text: enlace,
+
+width:180,
+
+height:180
+
+});
 
 
 }
