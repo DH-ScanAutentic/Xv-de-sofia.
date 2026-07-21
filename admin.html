@@ -61,7 +61,6 @@ button:hover{
     padding:15px;
     border-radius:15px;
 }
-
 </style>
 
 </head>
@@ -81,13 +80,11 @@ button:hover{
 
 <input id="lugares" type="number" placeholder="Número de lugares">
 
-
 <br>
 
 <button id="crear">
 Crear invitación
 </button>
-
 
 <p id="mensaje"></p>
 
@@ -112,8 +109,14 @@ import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
 
-import { getFirestore }
+import { 
+getFirestore,
+collection,
+addDoc,
+getDocs
+}
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
 
 
 const firebaseConfig = {
@@ -126,13 +129,100 @@ const firebaseConfig = {
 };
 
 
+
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
 
-document.getElementById("mensaje").innerHTML =
-"Firebase conectado ✅";
+
+document.getElementById("crear").addEventListener("click", async()=>{
+
+
+let nombre = document.getElementById("nombre").value;
+let lugares = document.getElementById("lugares").value;
+let mensaje = document.getElementById("mensaje");
+
+
+if(nombre==="" || lugares===""){
+
+mensaje.innerHTML="⚠️ Completa los datos";
+return;
+
+}
+
+
+
+await addDoc(collection(db,"invitados"),{
+
+nombre:nombre,
+lugares:Number(lugares),
+confirmado:false,
+fechaConfirmacion:null
+
+});
+
+
+mensaje.innerHTML="✅ Invitado creado";
+
+
+document.getElementById("nombre").value="";
+document.getElementById("lugares").value="";
+
+
+mostrarInvitados();
+
+
+});
+
+
+
+
+
+async function mostrarInvitados(){
+
+let lista=document.getElementById("lista");
+
+lista.innerHTML="";
+
+
+const consulta = await getDocs(collection(db,"invitados"));
+
+
+consulta.forEach((doc)=>{
+
+
+let invitado=doc.data();
+
+
+lista.innerHTML += `
+
+<div class="tarjeta">
+
+<b>${invitado.nombre}</b>
+
+<br>
+
+👥 Lugares: ${invitado.lugares}
+
+<br>
+
+${invitado.confirmado ? "✅ Confirmado" : "⏳ Pendiente"}
+
+</div>
+
+`;
+
+
+});
+
+
+}
+
+
+
+mostrarInvitados();
+
 
 
 </script>
