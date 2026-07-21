@@ -645,30 +645,35 @@ mostrarInvitados();
 
 window.eliminar=async function(id){
 
-
 if(confirm("¿Eliminar invitado?")){
 
-
 await deleteDoc(
-
 doc(db,"invitados",id)
-
 );
 
-
 mostrarInvitados();
 
+}
 
 }
 
 
+window.whatsapp=function(enlace,nombre){
+
+let mensaje =
+"Hola "+nombre+" 🌸\n\n"+
+"Te comparto tu invitación de XV años:\n\n"+
+enlace;
+
+
+window.location.href =
+"https://wa.me/?text="+encodeURIComponent(mensaje);
+
 }
 
 
 
 mostrarInvitados();
-
-
 
 </script>
 
