@@ -479,11 +479,15 @@ ${enlace}
 </button>
 
 
-<button onclick="whatsapp('${enlace}','${invitado.nombre}')">
+<a 
+href="https://wa.me/?text=${encodeURIComponent("Hola "+invitado.nombre+" 🌸\n\nTe comparto tu invitación de XV años:\n\n"+enlace)}"
+target="_blank">
 
+<button>
 📲 WhatsApp
-
 </button>
+
+</a>
 
 <button onclick="eliminar('${item.id}')">
 
@@ -523,6 +527,31 @@ document.getElementById("entradas").innerHTML=entradas;
 window.mostrarQR=function(id,enlace){
 
 window.guardarQR=function(id){
+
+let imagen=document.querySelector("#qr-"+id+" img");
+
+if(!imagen){
+
+alert("Primero genera el QR");
+
+return;
+
+}
+
+
+let enlace=document.createElement("a");
+
+enlace.href=imagen.src;
+
+enlace.download="QR-invitacion.png";
+
+document.body.appendChild(enlace);
+
+enlace.click();
+
+document.body.removeChild(enlace);
+
+}
 
 let qr =
 document.querySelector("#qr-"+id+" img");
@@ -601,21 +630,6 @@ horaEntrada:new Date()
 
 );
 
-window.whatsapp=function(enlace,nombre){
-
-let mensaje =
-"Hola "+nombre+" 🌸\n\n"+
-"Te comparto tu invitación de XV años:\n\n"+
-enlace;
-
-
-let url =
-"https://wa.me/?text=" + encodeURIComponent(mensaje);
-
-
-window.open(url,"_blank");
-
-}
 
 mostrarInvitados();
 
